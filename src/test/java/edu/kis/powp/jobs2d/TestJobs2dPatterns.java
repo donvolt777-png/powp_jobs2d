@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import edu.kis.legacy.drawer.panel.DefaultDrawerFrame;
 import edu.kis.legacy.drawer.panel.DrawPanelController;
 import edu.kis.powp.appbase.Application;
+import edu.kis.powp.jobs2d.drivers.DriverManager;
 import edu.kis.powp.jobs2d.drivers.adapter.DrawPanelControllerAdapter;
 import edu.kis.powp.jobs2d.events.SelectChangeVisibleOptionListener;
 import edu.kis.powp.jobs2d.events.SelectTestFigureOptionListener;
@@ -23,11 +24,19 @@ public class TestJobs2dPatterns {
 	 * @param application Application context.
 	 */
 	private static void setupPresetTests(Application application) {
-		SelectTestFigureOptionListener selectTestFigureOptionListener = new SelectTestFigureOptionListener(
-				DriverFeature.getDriverManager());
+		DriverManager driverManager = DriverFeature.getDriverManager();
 
-		application.addTest("Figure Joe 1", selectTestFigureOptionListener);
+		application.addTest(
+				"Figure Joe 1",
+				new SelectTestFigureOptionListener(driverManager, 1)
+		);
+
+		application.addTest(
+				"Figure Joe 2",
+				new SelectTestFigureOptionListener(driverManager, 2)
+		);
 	}
+
 
 	/**
 	 * Setup driver manager, and set default driver for application.
