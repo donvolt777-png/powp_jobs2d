@@ -7,13 +7,17 @@ import java.util.logging.Logger;
 
 import edu.kis.legacy.drawer.panel.DefaultDrawerFrame;
 import edu.kis.legacy.drawer.panel.DrawPanelController;
+import edu.kis.legacy.drawer.shape.ILine;
+import edu.kis.legacy.drawer.shape.LineFactory;
 import edu.kis.powp.appbase.Application;
 import edu.kis.powp.jobs2d.drivers.DriverManager;
 import edu.kis.powp.jobs2d.drivers.adapter.DrawPanelControllerAdapter;
+import edu.kis.powp.jobs2d.drivers.adapter.LineDrawStrategy;
 import edu.kis.powp.jobs2d.events.SelectChangeVisibleOptionListener;
 import edu.kis.powp.jobs2d.events.SelectTestFigureOptionListener;
 import edu.kis.powp.jobs2d.features.DrawerFeature;
 import edu.kis.powp.jobs2d.features.DriverFeature;
+import edu.kis.powp.jobs2d.drivers.adapter.LineDrawerAdapter;
 
 public class TestJobs2dPatterns {
 	private final static Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -44,15 +48,66 @@ public class TestJobs2dPatterns {
 	 * @param application Application context.
 	 */
 	private static void setupDrivers(Application application) {
+
 		Job2dDriver loggerDriver = new LoggerDriver();
 		DriverFeature.addDriver("Logger Driver", loggerDriver);
 		DriverFeature.getDriverManager().setCurrentDriver(loggerDriver);
+		Job2dDriver buggy = new DrawPanelControllerAdapter();
+		DriverFeature.addDriver("Buggy Simulator", buggy);
 
-		Job2dDriver testDriver = new DrawPanelControllerAdapter();
-		DriverFeature.addDriver("Buggy Simulator", testDriver);
+		DrawPanelController controller = DrawerFeature.getDrawerController();
+
+		LineDrawStrategy solidLine = (ctrl, x1, y1, x2, y2) -> {
+			ILine line = LineFactory.getBasicLine();
+			line.setStartCoordinates(x1, y1);
+			line.setEndCoordinates(x2, y2);
+			ctrl.drawLine(line);
+		};
+
+
+		LineDrawStrategy dashedLine = (ctrl, x1, y1, x2, y2) -> {
+			int dashLen = 12;
+			int gapLen  = 6;
+
+			double dx = x2 - x1;
+			double dy = y2 - y1;
+			double dist = Math.hypot(dx, dy);
+			if (dist == 0) return;
+
+			double ux = dx / dist;
+			double uy = dy / dist;
+			double pos = 0;
+
+			while (pos < dist) {
+				double draw = Math.min(dashLen, dist - pos);
+
+				int sx = (int)(x1 + pos * ux);
+				int sy = (int)(y1 + pos * uy);
+				int ex = (int)(x1 + (pos + draw) * ux);
+				int ey = (int)(y1 + (pos + draw) * uy);
+
+				ILine seg = LineFactory.getBasicLine();
+				seg.setStartCoordinates(sx, sy);
+				seg.setEndCoordinates(ex, ey);
+				ctrl.drawLine(seg);
+
+				pos += dashLen + gapLen;
+			}
+		};
+
+		DriverFeature.addDriver(
+				"Line – solid",
+				new LineDrawerAdapter(controller, solidLine)
+		);
+
+		DriverFeature.addDriver(
+				"Line – dashed(12/6)",
+				new LineDrawerAdapter(controller, dashedLine)
+		);
 
 		DriverFeature.updateDriverInfo();
 	}
+
 
 	/**
 	 * Auxiliary routines to enable using Buggy Simulator.
