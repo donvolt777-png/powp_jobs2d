@@ -18,6 +18,9 @@ import edu.kis.powp.jobs2d.events.SelectTestFigureOptionListener;
 import edu.kis.powp.jobs2d.features.DrawerFeature;
 import edu.kis.powp.jobs2d.features.DriverFeature;
 import edu.kis.powp.jobs2d.drivers.adapter.LineDrawerAdapter;
+import edu.kis.powp.jobs2d.AbstractDriver;
+import edu.kis.powp.jobs2d.drivers.adapter.Jobs2DriverAdapter; // Twoja nazwa klasy
+import edu.kis.powp.jobs2d.magicpresets.FiguresJane;          // jeśli taki pakiet
 
 public class TestJobs2dPatterns {
 	private final static Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -30,15 +33,14 @@ public class TestJobs2dPatterns {
 	private static void setupPresetTests(Application application) {
 		DriverManager driverManager = DriverFeature.getDriverManager();
 
-		application.addTest(
-				"Figure Joe 1",
-				new SelectTestFigureOptionListener(driverManager, 1)
-		);
+		application.addTest("Figure Joe 1", new SelectTestFigureOptionListener(driverManager, 1));
+		application.addTest("Figure Joe 2", new SelectTestFigureOptionListener(driverManager, 2));
 
-		application.addTest(
-				"Figure Joe 2",
-				new SelectTestFigureOptionListener(driverManager, 2)
-		);
+		application.addTest("Figure Jane 1", e -> {
+			Job2dDriver current = driverManager.getCurrentDriver();
+			AbstractDriver adapted = new Jobs2DriverAdapter(current, 0, 0);
+			FiguresJane.figureScript(adapted);
+		});
 	}
 
 
