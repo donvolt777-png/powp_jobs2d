@@ -10,6 +10,8 @@ import edu.kis.legacy.drawer.panel.DrawPanelController;
 import edu.kis.legacy.drawer.shape.ILine;
 import edu.kis.legacy.drawer.shape.LineFactory;
 import edu.kis.powp.appbase.Application;
+import edu.kis.powp.jobs2d.command.factory.CircleFactory;
+import edu.kis.powp.jobs2d.command.factory.RectangleFactory;
 import edu.kis.powp.jobs2d.drivers.DriverManager;
 import edu.kis.powp.jobs2d.drivers.adapter.DrawPanelControllerAdapter;
 import edu.kis.powp.jobs2d.drivers.adapter.LineDrawStrategy;
@@ -40,6 +42,15 @@ public class TestJobs2dPatterns {
 			Job2dDriver current = driverManager.getCurrentDriver();
 			AbstractDriver adapted = new Jobs2DriverAdapter(current, 0, 0);
 			FiguresJane.figureScript(adapted);
+		});
+		application.addTest("Rectangle (Command)", e -> {
+			Job2dDriver d = DriverFeature.getDriverManager().getCurrentDriver();
+			RectangleFactory.create(0, 0, 200, 120).execute(d);
+		});
+
+		application.addTest("Circle (Command)", e -> {
+			Job2dDriver d = DriverFeature.getDriverManager().getCurrentDriver();
+			CircleFactory.create(0, 0, 100, 36).execute(d);
 		});
 	}
 
