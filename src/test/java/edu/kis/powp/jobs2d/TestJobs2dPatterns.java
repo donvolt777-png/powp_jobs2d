@@ -10,6 +10,8 @@ import edu.kis.legacy.drawer.panel.DrawPanelController;
 import edu.kis.legacy.drawer.shape.ILine;
 import edu.kis.legacy.drawer.shape.LineFactory;
 import edu.kis.powp.appbase.Application;
+import edu.kis.powp.jobs2d.command.ComplexCommand;
+import edu.kis.powp.jobs2d.command.FiguresJoeCommandGenerator;
 import edu.kis.powp.jobs2d.command.factory.CircleFactory;
 import edu.kis.powp.jobs2d.command.factory.RectangleFactory;
 import edu.kis.powp.jobs2d.drivers.DriverManager;
@@ -51,6 +53,15 @@ public class TestJobs2dPatterns {
 		application.addTest("Circle (Command)", e -> {
 			Job2dDriver d = DriverFeature.getDriverManager().getCurrentDriver();
 			CircleFactory.create(0, 0, 100, 36).execute(d);
+		});
+		application.addTest("Figure Joe 1 (Command from script)", e -> {
+			ComplexCommand cmd = FiguresJoeCommandGenerator.generateFigure1();
+			cmd.execute(driverManager.getCurrentDriver());
+		});
+
+		application.addTest("Figure Joe 2 (Command from script)", e -> {
+			ComplexCommand cmd = FiguresJoeCommandGenerator.generateFigure2();
+			cmd.execute(driverManager.getCurrentDriver());
 		});
 	}
 
