@@ -54,15 +54,18 @@ public class TestJobs2dPatterns {
 			Job2dDriver d = DriverFeature.getDriverManager().getCurrentDriver();
 			CircleFactory.create(0, 0, 100, 36).execute(d);
 		});
-		application.addTest("Figure Joe 1 (Command from script)", e -> {
-			ComplexCommand cmd = FiguresJoeCommandGenerator.generateFigure1();
-			cmd.execute(driverManager.getCurrentDriver());
+		application.addTest("Figure Joe 1 (Command)", e -> {
+			FiguresJoeCommandGenerator
+					.generateFigure1()
+					.execute(DriverFeature.getDriverManager().getCurrentDriver());
 		});
 
-		application.addTest("Figure Joe 2 (Command from script)", e -> {
-			ComplexCommand cmd = FiguresJoeCommandGenerator.generateFigure2();
-			cmd.execute(driverManager.getCurrentDriver());
+		application.addTest("Figure Joe 2 (Command)", e -> {
+			FiguresJoeCommandGenerator
+					.generateFigure2()
+					.execute(DriverFeature.getDriverManager().getCurrentDriver());
 		});
+
 	}
 
 
